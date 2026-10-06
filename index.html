@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>글자 수 세기</title>
+<style>
+  :root { --green: #03c75a; --line: #e3e5e8; --sub: #767678; }
+  body { font-family: "Malgun Gothic", "Apple SD Gothic Neo", sans-serif; margin: 0; padding: 0 16px; background: #fff; color: #222; }
+  .wrap { max-width: 720px; margin: 15vh auto 0; }
+  h1 { text-align: center; color: var(--green); font-size: 40px; font-weight: 900; letter-spacing: -1px; margin: 0 0 28px; }
+
+  /* 초록 테두리의 둥근 입력 상자 */
+  .box { display: flex; align-items: flex-start; gap: 8px; border: 2px solid var(--green); border-radius: 30px;
+    padding: 12px 10px 12px 26px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+  .box:focus-within { box-shadow: 0 4px 16px rgba(3,199,90,.2); }
+  textarea { flex: 1; border: 0; outline: 0; resize: none; font: inherit; font-size: 20px; line-height: 1.5;
+    padding: 9px 0; box-sizing: border-box; min-height: 48px; max-height: 50vh; overflow-y: auto; background: transparent; }
+  textarea::placeholder { color: #aaa; }
+  #clear { flex: none; width: 48px; height: 48px; border: 0; border-radius: 50%; background: var(--green); color: #fff;
+    font-size: 20px; cursor: pointer; }
+  #clear:hover { background: #02b351; }
+
+  .info { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+    margin-top: 14px; padding: 0 20px; color: var(--sub); font-size: 15px; }
+  #result { font-size: 16px; color: #222; }
+  #limit { width: 80px; padding: 4px 8px; font-size: 15px; border: 1px solid var(--line); border-radius: 6px; }
+  #limit:focus { outline: 0; border-color: var(--green); }
+  .over { color: red; font-weight: bold; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>글자 수 세기</h1>
+    <div class="box">
+      <textarea id="text" rows="1" placeholder="여기에 글을 입력하세요"></textarea>
+      <button id="clear" title="전체 지우기" aria-label="전체 지우기">✕</button>
+    </div>
+    <div class="info">
+      <div id="result"></div>
+      <label>제한 글자 수: <input type="number" id="limit" min="0" placeholder="없음"></label>
+    </div>
+  </div>
+
+  <script>
+    function update() {
+      var text = document.getElementById('text').value;
+      var total = Array.from(text).length;
+      var noSpace = Array.from(text.replace(/\s/g, '')).length;
+      var limitValue = document.getElementById('limit').value;
+      var limit = limitValue === '' ? Infinity : Number(limitValue);
+      function num(n) {
+        return '<span' + (n > limit ? ' class="over"' : '') + '>' + n + '</span>';
+      }
+      document.getElementById('result').innerHTML =
+        '공백 포함: ' + num(total) + '자 / 공백 제외: ' + num(noSpace) + '자';
+    }
+    // 입력 상자를 글 길이에 맞춰 늘리기
+    function fit() {
+      var ta = document.getElementById('text');
+      ta.style.height = 'auto';
+      ta.style.height = ta.scrollHeight + 'px';
+    }
+    document.getElementById('clear').addEventListener('click', function () {
+      document.getElementById('text').value = '';
+      fit();
+      update();
+      document.getElementById('text').focus();
+    });
+    document.getElementById('text').addEventListener('input', function () {
+      fit();
+      update();
+    });
+    document.getElementById('limit').addEventListener('input', update);
+    update();
+  </script>
+</body>
+</html>
